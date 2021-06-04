@@ -1,5 +1,6 @@
 package com.galvanize.gbooks;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +15,7 @@ public class BooksController {
     }
 
     @PostMapping("/api/books")
+    @ResponseStatus(HttpStatus.CREATED)
     public Book postBook(@RequestBody Book book){
         return bookService.addBook(book);
     }
@@ -36,13 +38,13 @@ public class BooksController {
     }
 
     @DeleteMapping("/api/books/{id}")
-    public ResponseEntity<String> deleteBook(@PathVariable Long id){
+    public ResponseEntity.HeadersBuilder<?> deleteBook(@PathVariable Long id){
         Book book = bookService.getBook(id);
         if(book != null){
             bookService.deleteBook(id);
-            return ResponseEntity.ok(String.format("Book with id %s deleted", id));
+            return ResponseEntity.noContent();
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.notFound();
         }
     }
 
